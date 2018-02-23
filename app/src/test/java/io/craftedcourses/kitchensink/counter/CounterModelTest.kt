@@ -76,23 +76,21 @@ class CounterModelTest {
     )
     val lastKnownState = states.value
 
-    // Dispose
-    statesDisposable.dispose()
-    observer.dispose()
-
-    // Subscribe again...
-    val anotherObserver = TestObserver<CounterState>()
-    counterModelObservable.subscribe(states)
-    counterModelObservable.subscribe(anotherObserver)
+    // Act
+    val newObserver = disposeAndResubscribe()
 
     // Assert
-    anotherObserver.assertStates(
-        { bindings.onNext(Binding.RESTORED) } emits lastKnownState
+    newObserver.assertStates(
+        { restoredBinding() } emits lastKnownState
     )
   }
 
   private fun newBinding() {
     bindings.onNext(Binding.NEW)
+  }
+
+  private fun restoredBinding() {
+    bindings.onNext(Binding.RESTORED)
   }
 
   private fun increment() {
@@ -101,5 +99,17 @@ class CounterModelTest {
 
   private fun decrement() {
     decrementClicks.onNext(Unit)
+  }
+
+  private fun disposeAndResubscribe(): TestObserver<CounterState> {
+    // Dispose
+    statesDisposable.dispose()
+    observer.dispose()
+
+    // Subscribe again...
+    val observer = TestObserver<CounterState>()
+    counterModelObservable.subscribe(states)
+    counterModelObservable.subscribe(observer)
+    return observer
   }
 }
