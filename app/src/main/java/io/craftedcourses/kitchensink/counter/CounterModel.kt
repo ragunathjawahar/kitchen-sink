@@ -10,44 +10,32 @@ object CounterModel {
       bindings: Observable<Binding>,
       states: Observable<CounterState>
   ): Observable<CounterState> {
-    val newBindingStates = newBindingUseCase(bindings)
-    val incrementStates  = incrementUseCase(intentions, states)
-    val decrementStates  = decrementUseCase(intentions, states)
+    val numbers = Observable.merge(
+        intentions.increment(),
+        intentions.decrement()
+    )
 
     return Observable.merge(
-        newBindingStates, incrementStates, decrementStates
+        newBindingUseCase(bindings),
+        incrementDecrementUseCase(numbers, states)
     )
   }
 
-  private fun newBindingUseCase(bindings: Observable<Binding>): Observable<CounterState> {
+  private fun newBindingUseCase(
+      bindings: Observable<Binding>
+  ): Observable<CounterState> {
     return bindings
         .filter { it == Binding.NEW }
         .map    { CounterState.INITIAL }
   }
 
-  private fun incrementUseCase(
-      intentions: CounterIntentions,
+  private fun incrementDecrementUseCase(
+      numbers: Observable<Int>,
       states: Observable<CounterState>
   ): Observable<CounterState> {
-    val combiner = BiFunction<Int, CounterState, CounterState> { plusOne, previousState ->
-      previousState.add(plusOne)
+    val combiner = BiFunction<Int, CounterState, CounterState> { number, previousState ->
+      previousState.add(number)
     }
-
-    return intentions
-        .increment()
-        .withLatestFrom(states, combiner)
-  }
-
-  private fun decrementUseCase(
-      intentions: CounterIntentions,
-      states: Observable<CounterState>
-  ): Observable<CounterState> {
-    val combiner = BiFunction<Int, CounterState, CounterState> { minusOne, previousState ->
-      previousState.add(minusOne)
-    }
-
-    return intentions
-        .decrement()
-        .withLatestFrom(states, combiner)
+    return numbers.withLatestFrom(states, combiner)
   }
 }
