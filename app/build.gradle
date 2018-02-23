@@ -6,7 +6,7 @@ android {
   compileSdkVersion 26
   defaultConfig {
     applicationId   'io.craftedcourses.kitchensink'
-    minSdkVersion    16
+    minSdkVersion    17
     targetSdkVersion 26
     versionCode      1
     versionName     '1.0'
@@ -29,6 +29,7 @@ androidExtensions {
 dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlinVersion"
   implementation "com.android.support:appcompat-v7:26.1.0"
+  implementation 'com.android.support.constraint:constraint-layout:1.0.2'
   implementation "io.reactivex.rxjava2:rxjava:2.1.9"
   implementation "io.reactivex.rxjava2:rxandroid:2.0.2"
   implementation "com.jakewharton.rxbinding2:rxbinding-kotlin:2.1.1"
