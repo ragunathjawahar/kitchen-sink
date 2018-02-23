@@ -2,6 +2,7 @@ package io.craftedcourses.kitchensink.counter
 
 import io.craftedcourses.kitchensink.mvi.Binding
 import io.reactivex.Observable
+import io.reactivex.ObservableSource
 import io.reactivex.functions.BiFunction
 
 object CounterModel {
@@ -17,6 +18,7 @@ object CounterModel {
 
     return Observable.merge(
         newBindingUseCase(bindings),
+        restoredBindingUseCase(bindings, states),
         incrementDecrementUseCase(numbers, states)
     )
   }
@@ -27,6 +29,18 @@ object CounterModel {
     return bindings
         .filter { it == Binding.NEW }
         .map    { CounterState.INITIAL }
+  }
+
+  private fun restoredBindingUseCase(
+      bindings: Observable<Binding>,
+      states: Observable<CounterState>
+  ): ObservableSource<CounterState> {
+    val combiner = BiFunction<Binding, CounterState, CounterState> { _, previousState ->
+      previousState
+    }
+    return bindings
+        .filter { it == Binding.RESTORED }
+        .withLatestFrom(states, combiner)
   }
 
   private fun incrementDecrementUseCase(

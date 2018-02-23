@@ -10,6 +10,8 @@ import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_counter.*
 
+private const val KEY_STATE = "state"
+
 class CounterActivity : AppCompatActivity(), CounterView {
   private var newBinding = true
 
@@ -28,6 +30,10 @@ class CounterActivity : AppCompatActivity(), CounterView {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_counter)
+    savedInstanceState?.let {
+      states.onNext(savedInstanceState.getParcelable(KEY_STATE))
+      newBinding = false
+    }
   }
 
   override fun onStart() {
@@ -45,6 +51,18 @@ class CounterActivity : AppCompatActivity(), CounterView {
       newBinding = false // TODO(rj) 12/Feb/18 - Determine if new based on saved state
     }
     super.onStop()
+  }
+
+  override fun onSaveInstanceState(outState: Bundle?) {
+    outState?.putParcelable(KEY_STATE, states.value)
+    super.onSaveInstanceState(outState)
+  }
+
+  override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    savedInstanceState?.let {
+      states.onNext(savedInstanceState.getParcelable(KEY_STATE))
+    }
+    super.onRestoreInstanceState(savedInstanceState)
   }
 
   override fun displayCounter(value: Int) {

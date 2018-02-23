@@ -3,6 +3,8 @@ package io.craftedcourses.kitchensink.counter
 import io.craftedcourses.kitchensink.infra.assertStates
 import io.craftedcourses.kitchensink.infra.emits
 import io.craftedcourses.kitchensink.mvi.Binding
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
@@ -16,7 +18,9 @@ class CounterModelTest {
   private lateinit var intentions: CounterIntentions
   private lateinit var bindings: PublishSubject<Binding>
   private lateinit var states: BehaviorSubject<CounterState>
+  private lateinit var counterModelObservable: Observable<CounterState>
   private lateinit var observer: TestObserver<CounterState>
+  private lateinit var statesDisposable: Disposable
 
   @Before fun setup() {
     incrementClicks = PublishSubject.create()
@@ -26,9 +30,9 @@ class CounterModelTest {
     states          = BehaviorSubject.create()
     observer        = TestObserver()
 
-    val counterStates = CounterModel.bind(intentions, bindings, states).share()
-    counterStates.subscribe(states)
-    counterStates.subscribe(observer)
+    counterModelObservable = CounterModel.bind(intentions, bindings, states).share()
+    statesDisposable       = counterModelObservable.subscribe { states.onNext(it) }
+    counterModelObservable.subscribe(observer)
   }
 
   @Test fun `user sees zero when UI is setup`() {
@@ -60,6 +64,30 @@ class CounterModelTest {
         { increment()  } emits CounterState(2),
         { increment()  } emits CounterState(3),
         { decrement()  } emits CounterState(2)
+    )
+  }
+
+  @Test fun `user sees previous state when subscription is restored`() {
+    // Setup
+    observer.assertStates(
+        { newBinding() } emits CounterState.INITIAL,
+        { increment()  } emits CounterState(1),
+        { increment()  } emits CounterState(2)
+    )
+    val lastKnownState = states.value
+
+    // Dispose
+    statesDisposable.dispose()
+    observer.dispose()
+
+    // Subscribe again...
+    val anotherObserver = TestObserver<CounterState>()
+    counterModelObservable.subscribe(states)
+    counterModelObservable.subscribe(anotherObserver)
+
+    // Assert
+    anotherObserver.assertStates(
+        { bindings.onNext(Binding.RESTORED) } emits lastKnownState
     )
   }
 

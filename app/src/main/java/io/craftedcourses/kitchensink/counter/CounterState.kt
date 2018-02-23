@@ -1,6 +1,9 @@
 package io.craftedcourses.kitchensink.counter
 
-data class CounterState(val counter: Int) {
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize data class CounterState(val counter: Int) : Parcelable {
   companion object {
     val INITIAL = CounterState(0)
   }
