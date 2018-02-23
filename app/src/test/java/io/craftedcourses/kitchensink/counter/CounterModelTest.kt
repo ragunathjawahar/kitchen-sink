@@ -56,11 +56,10 @@ class CounterModelTest {
   @Test fun `user can increment and decrement counter`() {
     observer.assertStates(
         { newBinding() } emits CounterState.INITIAL,
-        { decrement()  } emits CounterState(-1),
-        { increment()  } emits CounterState(0),
         { increment()  } emits CounterState(1),
         { increment()  } emits CounterState(2),
-        { increment()  } emits CounterState(3)
+        { increment()  } emits CounterState(3),
+        { decrement()  } emits CounterState(2)
     )
   }
 
