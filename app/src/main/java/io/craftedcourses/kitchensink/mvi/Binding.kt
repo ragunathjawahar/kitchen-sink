@@ -1,5 +1,5 @@
 package io.craftedcourses.kitchensink.mvi
 
-enum class BindingState {
+enum class Binding {
   NEW
 }
