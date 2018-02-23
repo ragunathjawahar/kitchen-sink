@@ -1,5 +1,7 @@
 package io.craftedcourses.kitchensink.counter
 
+import io.craftedcourses.kitchensink.infra.assertStates
+import io.craftedcourses.kitchensink.infra.emits
 import io.craftedcourses.kitchensink.mvi.Binding
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.BehaviorSubject
@@ -30,77 +32,47 @@ class CounterModelTest {
   }
 
   @Test fun `user sees zero when UI is setup`() {
-    // Act
-    bindings.onNext(Binding.NEW)
-
-    // Assert
-    with(observer) {
-      assertNoErrors()
-      assertValues(CounterState.INITIAL)
-      assertNotTerminated()
-    }
+    observer.assertStates(
+        { newBinding() } emits CounterState.INITIAL
+    )
   }
 
   @Test fun `user can increment counter`() {
-    // Act
-    bindings.onNext(Binding.NEW)
-
-    incrementClicks.onNext(Unit)
-    incrementClicks.onNext(Unit)
-
-    // Assert
-    with(observer) {
-      assertNoErrors()
-      assertValues(
-          CounterState.INITIAL,
-          CounterState(1),
-          CounterState(2)
-      )
-      assertNotTerminated()
-    } // TODO(rj) 23/Feb/18 - A nicer API for assertions
+    observer.assertStates(
+        { newBinding() } emits CounterState.INITIAL,
+        { increment()  } emits CounterState(1),
+        { increment()  } emits CounterState(2)
+    )
   }
 
   @Test fun `user can decrement counter`() {
-    // Act
-    bindings.onNext(Binding.NEW)
-
-    decrementClicks.onNext(Unit)
-    decrementClicks.onNext(Unit)
-
-    // Assert
-    with(observer) {
-      assertNoErrors()
-      assertValues(
-          CounterState.INITIAL,
-          CounterState(-1),
-          CounterState(-2)
-      )
-      assertNotTerminated()
-    }
+    observer.assertStates(
+        { newBinding() } emits CounterState.INITIAL,
+        { decrement()  } emits CounterState(-1),
+        { decrement()  } emits CounterState(-2)
+    )
   }
 
   @Test fun `user can increment and decrement counter`() {
-    // Act
+    observer.assertStates(
+        { newBinding() } emits CounterState.INITIAL,
+        { decrement()  } emits CounterState(-1),
+        { increment()  } emits CounterState(0),
+        { increment()  } emits CounterState(1),
+        { increment()  } emits CounterState(2),
+        { increment()  } emits CounterState(3)
+    )
+  }
+
+  private fun newBinding() {
     bindings.onNext(Binding.NEW)
+  }
 
+  private fun increment() {
+    incrementClicks.onNext(Unit)
+  }
+
+  private fun decrement() {
     decrementClicks.onNext(Unit)
-    incrementClicks.onNext(Unit)
-    incrementClicks.onNext(Unit)
-    incrementClicks.onNext(Unit)
-    incrementClicks.onNext(Unit)
-
-    // Assert
-    with(observer) {
-      assertNoErrors()
-      assertValues(
-          CounterState.INITIAL,
-          CounterState(-1),
-          CounterState(0),
-          CounterState(1),
-          CounterState(2),
-          CounterState(3)
-      )
-      assertNotTerminated()
-    }
   }
 }
