@@ -2,7 +2,8 @@ package io.craftedcourses.kitchensink.budapest
 
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 
 @Suppress("IllegalIdentifier") // JVM tests can have spaces in function names
 class BudapestViewDriverTest {
@@ -21,7 +22,7 @@ class BudapestViewDriverTest {
     viewDriver.render(strangerState)
 
     // Then
-    verify(view, times(1)).greetStranger()
+    verify(view).greetStranger()
   }
 
   @Test fun `greet person`() {
@@ -30,6 +31,6 @@ class BudapestViewDriverTest {
     viewDriver.render(personState)
 
     // Then
-    verify(view, times(1)).greetPerson(personState.name)
+    verify(view).greetPerson(personState.name)
   }
 }
