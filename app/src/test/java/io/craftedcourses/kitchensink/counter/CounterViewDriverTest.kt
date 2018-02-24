@@ -1,8 +1,7 @@
 package io.craftedcourses.kitchensink.counter
 
 import org.junit.Test
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 
 @Suppress("IllegalIdentifier") // JVM tests can have spaces in function names
 class CounterViewDriverTest {
@@ -17,5 +16,6 @@ class CounterViewDriverTest {
 
     // Then
     verify(view).displayCounter(counter)
+    verifyNoMoreInteractions(view)
   }
 }
