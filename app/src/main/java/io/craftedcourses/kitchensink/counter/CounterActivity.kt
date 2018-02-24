@@ -4,20 +4,13 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.jakewharton.rxbinding2.view.clicks
 import io.craftedcourses.kitchensink.R
-import io.craftedcourses.kitchensink.mvi.Binding
-import io.reactivex.disposables.Disposable
-import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.PublishSubject
+import io.craftedcourses.kitchensink.mvi.MviDelegate
 import kotlinx.android.synthetic.main.counter_activity.*
 
-private const val KEY_STATE = "state"
-
 class CounterActivity : AppCompatActivity(), CounterView {
-  private var newBinding = true
-
-  private lateinit var disposable: Disposable
-  private val bindings: PublishSubject<Binding>     = PublishSubject.create()
-  private val states: BehaviorSubject<CounterState> = BehaviorSubject.create()
+  private val mviDelegate: MviDelegate<CounterState> by lazy {
+    MviDelegate<CounterState>()
+  }
 
   private val intentions: CounterIntentions by lazy {
     CounterIntentions(incrementButton.clicks(), decrementButton.clicks())
@@ -27,45 +20,38 @@ class CounterActivity : AppCompatActivity(), CounterView {
     CounterViewDriver(this)
   }
 
+  override fun displayCounter(value: Int) {
+    counterTextView.text = value.toString()
+  }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.counter_activity)
-    savedInstanceState?.let {
-      states.onNext(savedInstanceState.getParcelable(KEY_STATE))
-      newBinding = false
-    }
+    mviDelegate.onCreate(savedInstanceState)
   }
 
   override fun onStart() {
     super.onStart()
-    val counterStates = CounterModel.bind(intentions, bindings, states).share()
-    counterStates.subscribe(states)
-    disposable = counterStates.subscribe { viewDriver.render(it) }
+    val bindingFunction = {
+      CounterModel.bind(intentions, mviDelegate.bindings(), mviDelegate.states())
+    }
+    val renderFunction: (CounterState) -> Unit = { viewDriver.render(it) }
 
-    bindings.onNext(if (newBinding) Binding.NEW else Binding.RESTORED)
+    mviDelegate.onStart(bindingFunction, renderFunction)
   }
 
   override fun onStop() {
-    if (!disposable.isDisposed) {
-      disposable.dispose()
-      newBinding = false // TODO(rj) 12/Feb/18 - Determine if new based on saved state
-    }
+    mviDelegate.onStop()
     super.onStop()
   }
 
   override fun onSaveInstanceState(outState: Bundle?) {
-    outState?.putParcelable(KEY_STATE, states.value)
+    mviDelegate.onSaveInstanceState(outState)
     super.onSaveInstanceState(outState)
   }
 
   override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-    savedInstanceState?.let {
-      states.onNext(savedInstanceState.getParcelable(KEY_STATE))
-    }
     super.onRestoreInstanceState(savedInstanceState)
-  }
-
-  override fun displayCounter(value: Int) {
-    counterTextView.text = value.toString()
+    mviDelegate.onRestoreInstanceState(savedInstanceState)
   }
 }
