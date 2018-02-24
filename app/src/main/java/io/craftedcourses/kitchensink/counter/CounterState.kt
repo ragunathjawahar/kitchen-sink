@@ -5,7 +5,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize data class CounterState(val counter: Int) : Parcelable {
   companion object {
-    val INITIAL = CounterState(0)
+    val ZERO = CounterState(0)
   }
 
   fun add(number: Int): CounterState =

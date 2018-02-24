@@ -37,13 +37,13 @@ class CounterModelTest {
 
   @Test fun `user sees zero when UI is setup`() {
     observer.assertStates(
-        { newBinding() } emits CounterState.INITIAL
+        { newBinding() } emits CounterState.ZERO
     )
   }
 
   @Test fun `user can increment counter`() {
     observer.assertStates(
-        { newBinding() } emits CounterState.INITIAL,
+        { newBinding() } emits CounterState.ZERO,
         { increment()  } emits CounterState(1),
         { increment()  } emits CounterState(2)
     )
@@ -51,7 +51,7 @@ class CounterModelTest {
 
   @Test fun `user can decrement counter`() {
     observer.assertStates(
-        { newBinding() } emits CounterState.INITIAL,
+        { newBinding() } emits CounterState.ZERO,
         { decrement()  } emits CounterState(-1),
         { decrement()  } emits CounterState(-2)
     )
@@ -59,7 +59,7 @@ class CounterModelTest {
 
   @Test fun `user can increment and decrement counter`() {
     observer.assertStates(
-        { newBinding() } emits CounterState.INITIAL,
+        { newBinding() } emits CounterState.ZERO,
         { increment()  } emits CounterState(1),
         { increment()  } emits CounterState(2),
         { increment()  } emits CounterState(3),
@@ -70,7 +70,7 @@ class CounterModelTest {
   @Test fun `user sees previous state when subscription is restored`() {
     // Setup
     observer.assertStates(
-        { newBinding() } emits CounterState.INITIAL,
+        { newBinding() } emits CounterState.ZERO,
         { increment()  } emits CounterState(1),
         { increment()  } emits CounterState(2)
     )

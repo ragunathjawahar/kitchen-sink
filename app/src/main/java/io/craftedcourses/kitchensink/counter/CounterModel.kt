@@ -28,7 +28,7 @@ object CounterModel {
   ): Observable<CounterState> {
     return bindings
         .filter { it == Binding.NEW }
-        .map    { CounterState.INITIAL }
+        .map    { CounterState.ZERO }
   }
 
   private fun restoredBindingUseCase(

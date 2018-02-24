@@ -7,7 +7,7 @@ import org.junit.Test
 class CounterStateTest {
   @Test fun `add positive digit`() {
     // Given
-    val previousState = CounterState.INITIAL
+    val previousState = CounterState.ZERO
 
     // When
     val nextState = previousState.add(1)
@@ -20,7 +20,7 @@ class CounterStateTest {
 
   @Test fun `add negative digit`() {
     // Given
-    val previousState = CounterState.INITIAL
+    val previousState = CounterState.ZERO
 
     // When
     val nextState = previousState.add(-1)
