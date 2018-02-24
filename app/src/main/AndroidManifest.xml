@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   package="io.craftedcourses.kitchensink"
   >
 
@@ -11,11 +12,12 @@
     android:allowBackup="false"
     android:supportsRtl="false"
     android:theme="@style/AppTheme"
+    tools:ignore="GoogleAppIndexingWarning"
     >
 
     <activity
-      android:name=".counter.CounterActivity"
-      android:label="@string/counter"
+      android:name=".budapest.BudapestActivity"
+      android:label="@string/budapest"
       >
       <intent-filter>
         <action
@@ -27,5 +29,10 @@
           />
       </intent-filter>
     </activity>
+
+    <activity
+      android:name=".counter.CounterActivity"
+      android:label="@string/counter"
+      />
   </application>
 </manifest>

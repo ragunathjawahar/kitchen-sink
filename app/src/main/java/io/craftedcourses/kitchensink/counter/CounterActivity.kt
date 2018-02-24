@@ -8,7 +8,7 @@ import io.craftedcourses.kitchensink.mvi.Binding
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.activity_counter.*
+import kotlinx.android.synthetic.main.counter_activity.*
 
 private const val KEY_STATE = "state"
 
@@ -29,7 +29,7 @@ class CounterActivity : AppCompatActivity(), CounterView {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_counter)
+    setContentView(R.layout.counter_activity)
     savedInstanceState?.let {
       states.onNext(savedInstanceState.getParcelable(KEY_STATE))
       newBinding = false

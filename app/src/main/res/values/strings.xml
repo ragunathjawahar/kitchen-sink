@@ -1,5 +1,13 @@
 <resources>
-  <string name="app_name">KitchenSink</string>
+  <string name="app_name">Kitchen Sink</string>
+
+  <!-- Budapest -->
+  <string name="budapest">Budapest</string>
+  <string name="name">Name</string>
+  <string name="hello_stranger">Hello, Stranger!</string>
+  <string name="hello_person">Hello, %s!</string>
+
+  <!-- Counter -->
   <string name="counter">Counter</string>
   <string name="increment">Increment</string>
   <string name="decrement">Decrement</string>
