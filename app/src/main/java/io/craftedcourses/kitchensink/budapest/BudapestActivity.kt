@@ -1,15 +1,28 @@
 package io.craftedcourses.kitchensink.budapest
 
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import com.jakewharton.rxbinding2.widget.textChanges
 import io.craftedcourses.kitchensink.R
+import io.craftedcourses.kitchensink.mvi.MviActivity
+import io.reactivex.Observable
 import kotlinx.android.synthetic.main.budapest_activity.*
 
-class BudapestActivity : AppCompatActivity(), BudapestView {
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.budapest_activity)
+class BudapestActivity : MviActivity<BudapestState>(), BudapestView {
+  private val intentions: BudapestIntentions by lazy {
+    BudapestIntentions(nameEditText.textChanges().skipInitialValue())
   }
+
+  private val viewDriver: BudapestViewDriver by lazy {
+    BudapestViewDriver(this)
+  }
+
+  override fun layoutResId(): Int =
+      R.layout.budapest_activity
+
+  override fun bindingFunction(): () -> Observable<BudapestState> =
+      { BudapestModel.bind(intentions, bindings, states) }
+
+  override fun renderFunction(): (BudapestState) -> Unit =
+      { state -> viewDriver.render(state) }
 
   override fun greetStranger() {
     greetingTextView.setText(R.string.hello_stranger)
