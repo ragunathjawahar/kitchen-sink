@@ -108,7 +108,7 @@ class CounterModelTest {
 
     // Subscribe again...
     val observer = TestObserver<CounterState>()
-    counterModelObservable.subscribe(states)
+    statesDisposable = counterModelObservable.subscribe { states.onNext(it) }
     counterModelObservable.subscribe(observer)
     return observer
   }
