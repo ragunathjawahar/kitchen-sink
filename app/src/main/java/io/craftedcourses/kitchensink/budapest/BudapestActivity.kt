@@ -5,13 +5,14 @@ import io.craftedcourses.kitchensink.R
 import io.craftedcourses.kitchensink.mvi.MviActivity
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.budapest_activity.*
+import kotlin.LazyThreadSafetyMode.NONE
 
 class BudapestActivity : MviActivity<BudapestState>(), BudapestView {
-  private val intentions: BudapestIntentions by lazy {
+  private val intentions: BudapestIntentions by lazy(NONE) {
     BudapestIntentions(nameEditText.textChanges().skipInitialValue())
   }
 
-  private val viewDriver: BudapestViewDriver by lazy {
+  private val viewDriver: BudapestViewDriver by lazy(NONE) {
     BudapestViewDriver(this)
   }
 

@@ -5,9 +5,10 @@ import android.os.Parcelable
 import android.support.annotation.LayoutRes
 import android.support.v7.app.AppCompatActivity
 import io.reactivex.Observable
+import kotlin.LazyThreadSafetyMode.NONE
 
 abstract class MviActivity<T : Parcelable> : AppCompatActivity() { // TODO(rj) 24/Feb/18 - Remove constraint <T : Parcelable>
-  private val mviDelegate: MviDelegate<T> by lazy { MviDelegate<T>() }
+  private val mviDelegate: MviDelegate<T> by lazy(NONE) { MviDelegate<T>() }
 
   protected val bindings: Observable<Binding>
     get() = mviDelegate.bindings()
