@@ -13,7 +13,7 @@ class BudapestActivity : MviActivity<BudapestState>(), BudapestView {
   }
 
   private val viewDriver: BudapestViewDriver by lazy(NONE) {
-    BudapestViewDriver(this)
+    BudapestViewDriver()
   }
 
   override fun layoutResId(): Int =
@@ -23,7 +23,7 @@ class BudapestActivity : MviActivity<BudapestState>(), BudapestView {
       { BudapestModel.bind(intentions, bindings, states) }
 
   override fun renderFunction(): (BudapestState) -> Unit =
-      { state -> viewDriver.render(state) }
+      { state -> viewDriver.render(this, state) }
 
   override fun greetStranger() {
     greetingTextView.setText(R.string.hello_stranger)

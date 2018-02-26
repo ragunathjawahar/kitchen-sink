@@ -12,13 +12,13 @@ class BudapestViewDriverTest {
   @Before fun setup() {
     // Given
     view = mock(BudapestView::class.java)
-    viewDriver = BudapestViewDriver(view)
+    viewDriver = BudapestViewDriver()
   }
 
   @Test fun `greet stranger`() {
     // When
     val strangerState = BudapestState.STRANGER
-    viewDriver.render(strangerState)
+    viewDriver.render(view, strangerState)
 
     // Then
     verify(view).greetStranger()
@@ -28,7 +28,7 @@ class BudapestViewDriverTest {
   @Test fun `greet person`() {
     // When
     val personState = BudapestState("Alan")
-    viewDriver.render(personState)
+    viewDriver.render(view, personState)
 
     // Then
     verify(view).greetPerson(personState.name)

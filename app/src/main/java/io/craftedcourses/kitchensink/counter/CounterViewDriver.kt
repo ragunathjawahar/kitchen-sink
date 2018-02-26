@@ -2,10 +2,8 @@ package io.craftedcourses.kitchensink.counter
 
 import io.craftedcourses.kitchensink.mvi.ViewDriver
 
-class CounterViewDriver(
-    private val view: CounterView
-) : ViewDriver<CounterView, CounterState>(view) {
-  override fun render(state: CounterState) {
+class CounterViewDriver : ViewDriver<CounterView, CounterState> {
+  override fun render(view: CounterView, state: CounterState) {
     view.displayCounter(state.counter)
   }
 }

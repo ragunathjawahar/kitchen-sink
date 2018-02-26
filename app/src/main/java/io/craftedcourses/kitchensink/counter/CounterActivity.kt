@@ -13,7 +13,7 @@ class CounterActivity : MviActivity<CounterState>(), CounterView {
   }
 
   private val viewDriver: CounterViewDriver by lazy(NONE) {
-    CounterViewDriver(this)
+    CounterViewDriver()
   }
 
   override fun layoutResId(): Int =
@@ -23,7 +23,7 @@ class CounterActivity : MviActivity<CounterState>(), CounterView {
       { CounterModel.bind(intentions, bindings, states) }
 
   override fun renderFunction(): (CounterState) -> Unit =
-      { state -> viewDriver.render(state) }
+      { state -> viewDriver.render(this, state) }
 
   override fun displayCounter(value: Int) {
     counterTextView.text = value.toString()

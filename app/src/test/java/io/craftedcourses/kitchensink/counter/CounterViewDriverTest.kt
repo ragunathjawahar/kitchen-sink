@@ -8,11 +8,11 @@ class CounterViewDriverTest {
   @Test fun `display counter value`() {
     // Given
     val view = mock(CounterView::class.java)
-    val viewDriver = CounterViewDriver(view)
+    val viewDriver = CounterViewDriver()
 
     // When
     val counter = 5
-    viewDriver.render(CounterState(5))
+    viewDriver.render(view, CounterState(5))
 
     // Then
     verify(view).displayCounter(counter)

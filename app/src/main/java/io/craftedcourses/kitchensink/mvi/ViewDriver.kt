@@ -1,5 +1,5 @@
 package io.craftedcourses.kitchensink.mvi
 
-abstract class ViewDriver<V, in S>(private val view: V) {
-  abstract fun render(state: S)
+interface ViewDriver<in V, in S> {
+  fun render(view: V, state: S)
 }
