@@ -3,7 +3,7 @@ package io.craftedcourses.kitchensink.counter
 import io.craftedcourses.kitchensink.mvi.Binding
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
-import io.reactivex.functions.BiFunction
+import io.reactivex.rxkotlin.withLatestFrom
 
 object CounterModel {
   fun bind(
@@ -35,21 +35,17 @@ object CounterModel {
       bindings: Observable<Binding>,
       states: Observable<CounterState>
   ): ObservableSource<CounterState> {
-    val combiner = BiFunction<Binding, CounterState, CounterState> { _, previousState ->
-      previousState
-    }
     return bindings
         .filter { it == Binding.RESTORED }
-        .withLatestFrom(states, combiner)
+        .withLatestFrom(states) { _, previousState -> previousState }
   }
 
   private fun incrementDecrementUseCase(
       numbers: Observable<Int>,
       states: Observable<CounterState>
   ): Observable<CounterState> {
-    val combiner = BiFunction<Int, CounterState, CounterState> { number, previousState ->
+    return numbers.withLatestFrom(states) { number, previousState ->
       previousState.add(number)
     }
-    return numbers.withLatestFrom(states, combiner)
   }
 }

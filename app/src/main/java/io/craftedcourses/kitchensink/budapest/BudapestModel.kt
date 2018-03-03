@@ -2,7 +2,7 @@ package io.craftedcourses.kitchensink.budapest
 
 import io.craftedcourses.kitchensink.mvi.Binding
 import io.reactivex.Observable
-import io.reactivex.functions.BiFunction
+import io.reactivex.rxkotlin.withLatestFrom
 
 object BudapestModel {
   fun bind(
@@ -29,12 +29,11 @@ object BudapestModel {
       bindings: Observable<Binding>,
       states: Observable<BudapestState>
   ): Observable<BudapestState>? {
-    val combiner = BiFunction<Binding, BudapestState, BudapestState> { _, previousState ->
-      previousState
-    }
     return bindings
         .filter { it == Binding.RESTORED }
-        .withLatestFrom(states, combiner)
+        .withLatestFrom(states) { _, previousState ->
+          previousState
+        }
   }
 
   private fun enterNameUseCase(
