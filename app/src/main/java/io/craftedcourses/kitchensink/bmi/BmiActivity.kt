@@ -2,19 +2,25 @@ package io.craftedcourses.kitchensink.bmi
 
 import com.jakewharton.rxbinding2.widget.RxSeekBar
 import io.craftedcourses.kitchensink.R
+import io.craftedcourses.kitchensink.databinding.ActivityBmiBinding
 import io.craftedcourses.kitchensink.mvi.MviActivity
+import io.craftedcourses.kitchensink.util.BindActivity
 import io.reactivex.Observable
-import kotlinx.android.synthetic.main.activity_bmi.*
 import kotlin.LazyThreadSafetyMode.NONE
 
-class BmiActivity : MviActivity<BmiState>(), BmiView {
+class BmiActivity : MviActivity<BmiState>() {
+
+  private val viewDataBinding: ActivityBmiBinding by BindActivity(layoutResId())
 
   private val intentions: BmiIntentions by lazy(NONE) {
-    BmiIntentions(RxSeekBar.changes(weightSeekBar), RxSeekBar.changes(heightSeekBar))
+    BmiIntentions(
+        RxSeekBar.changes(viewDataBinding.weightSeekBar),
+        RxSeekBar.changes(viewDataBinding.heightSeekBar)
+    )
   }
 
-  private val viewDriver: BmiViewDriver by lazy(NONE) {
-    BmiViewDriver()
+  private val viewDriver: BmiViewDataBindingDriver by lazy(NONE) {
+    BmiViewDataBindingDriver()
   }
 
   override fun layoutResId(): Int =
@@ -25,18 +31,6 @@ class BmiActivity : MviActivity<BmiState>(), BmiView {
   }
 
   override fun renderFunction(): (BmiState) -> Unit {
-    return { state -> viewDriver.render(this, state) }
-  }
-
-  override fun updateWeightText(weight: Int) {
-    weightTextView.text = getString(R.string.weight_format, weight)
-  }
-
-  override fun updateHeightText(height: Int) {
-    heightTextView.text = getString(R.string.height_format, height)
-  }
-
-  override fun updateBmiText(bmi: Int) {
-    bmiTextView.text = getString(R.string.bmi_format, bmi)
+    return { state -> viewDriver.render(viewDataBinding, state) }
   }
 }
