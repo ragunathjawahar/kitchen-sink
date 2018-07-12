@@ -11,4 +11,12 @@
   <string name="counter">Counter</string>
   <string name="increment">Increment</string>
   <string name="decrement">Decrement</string>
+
+  <!-- BMI -->
+  <string name="bmi">BMI</string>
+  <string name="weight_format">%d kg</string>
+  <string name="height_format">%d cm</string>
+  <string name="bmi_format">BMI : %d</string>
+  <string name="_0_kg">0 kg</string>
+  <string name="_0_cm">0 cm</string>
 </resources>
