@@ -2,37 +2,31 @@
 <manifest
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
-  package="io.craftedcourses.kitchensink"
-  >
+  package="io.craftedcourses.kitchensink">
 
   <application
-    android:label="@string/app_name"
-    android:icon="@mipmap/ic_launcher"
-    android:roundIcon="@mipmap/ic_launcher_round"
     android:allowBackup="false"
+    android:icon="@mipmap/ic_launcher"
+    android:label="@string/app_name"
+    android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="false"
     android:theme="@style/AppTheme"
-    tools:ignore="GoogleAppIndexingWarning"
-    >
-
+    tools:ignore="GoogleAppIndexingWarning">
     <activity
       android:name=".budapest.BudapestActivity"
-      android:label="@string/budapest"
-      >
-      <intent-filter>
-        <action
-          android:name="android.intent.action.MAIN"
-          />
-
-        <category
-          android:name="android.intent.category.LAUNCHER"
-          />
-      </intent-filter>
+      android:label="@string/budapest">
     </activity>
-
     <activity
       android:name=".counter.CounterActivity"
-      android:label="@string/counter"
-      />
+      android:label="@string/counter"/>
+    <activity android:name=".bmi.BmiActivity"
+              android:label="@string/bmi">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity>
   </application>
+
 </manifest>
